@@ -8,38 +8,36 @@ volumes:
   pg_data:
   solr_data:
   nginx_config:
-  mslapi_signal:
-  mslapi_storage:
   ckan_api_key:
 
 services:
   ckan:
-     container_name: ckan
-     image: ghcr.io/utrechtuniversity/lexces-catalog-ckan:latest
-     links:
-       - db
-       - solr
-       - redis
-     depends_on:
-       - db
-       - solr
-       - redis
-     ports:
-       - "5000"
-     environment:
-       - CKAN_SQLALCHEMY_URL=postgresql://ckan:${POSTGRES_PASSWORD}@db/ckan_default
-       - CKAN_SOLR_URL=http://solr:8983/solr/ckan
-       - CKAN_REDIS_URL=redis://redis:6379/1
-       - CKAN_SITE_URL=${CKAN_SITE_URL}
-       - CKAN_DATABASE_PASSWORD=${CKAN_DATABASE_PASSWORD}
-       - CKAN_ADMIN_PASSWORD=${CKAN_ADMIN_PASSWORD}
-       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-       - LEXCES_CATALOG_HOST=${LEXCES_CATALOG_HOST}
-       - LEXCES_CATALOG_HOST_PORT=${LEXCES_CATALOG_HOST_PORT}
-     volumes:
-       - ckan_config:/etc/ckan
-       - ckan_home:/usr/lib/ckan
-       - ckan_storage:/var/lib/ckan
+    container_name: ckan
+    image: ghcr.io/utrechtuniversity/lexces-catalog-ckan:latest
+    links:
+      - db
+      - solr
+      - redis
+    depends_on:
+      - db
+      - solr
+      - redis
+    ports:
+      - "5000"
+    environment:
+      - CKAN_SQLALCHEMY_URL=postgresql://ckan:${POSTGRES_PASSWORD}@db/ckan_default
+      - CKAN_SOLR_URL=http://solr:8983/solr/ckan
+      - CKAN_REDIS_URL=redis://redis:6379/1
+      - CKAN_SITE_URL=${CKAN_SITE_URL}
+      - CKAN_DATABASE_PASSWORD=${CKAN_DATABASE_PASSWORD}
+      - CKAN_ADMIN_PASSWORD=${CKAN_ADMIN_PASSWORD}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - LEXCES_CATALOG_HOST=${LEXCES_CATALOG_HOST}
+      - LEXCES_CATALOG_HOST_PORT=${LEXCES_CATALOG_HOST_PORT}
+    volumes:
+      - ckan_config:/etc/ckan
+      - ckan_home:/usr/lib/ckan
+      - ckan_storage:/var/lib/ckan
 
   nginx:
     container_name: nginx
@@ -83,14 +81,14 @@ services:
     container_name: mta
     image: ghcr.io/utrechtuniversity/lexces-catalog-mta:latest
     environment:
-      -  MTA_ROLE=${MTA_ROLE}
-      -  POSTFIX_RELAYHOST_FQDN=${POSTFIX_RELAYHOST_FQDN}
-      -  POSTFIX_RELAYHOST_PORT=${POSTFIX_RELAYHOST_PORT}
-      -  POSTFIX_RELAYHOST_USERNAME=${POSTFIX_RELAYHOST_USERNAME}
-      -  POSTFIX_RELAYHOST_PASSWORD=${POSTFIX_RELAYHOST_PASSWORD}
-      -  POSTFIX_RELAYHOST_AUTH_ENABLED=${POSTFIX_RELAYHOST_AUTH_ENABLED}
-      -  POSTFIX_RELAYHOST_TLS_ENABLED=${POSTFIX_RELAYHOST_TLS_ENABLED}
-      -  POSTFIX_MYHOSTNAME=${POSTFIX_MYHOSTNAME}
-      -  POSTFIX_ORIGIN=${POSTFIX_ORIGIN}
+      - MTA_ROLE=${MTA_ROLE}
+      - POSTFIX_RELAYHOST_FQDN=${POSTFIX_RELAYHOST_FQDN}
+      - POSTFIX_RELAYHOST_PORT=${POSTFIX_RELAYHOST_PORT}
+      - POSTFIX_RELAYHOST_USERNAME=${POSTFIX_RELAYHOST_USERNAME}
+      - POSTFIX_RELAYHOST_PASSWORD=${POSTFIX_RELAYHOST_PASSWORD}
+      - POSTFIX_RELAYHOST_AUTH_ENABLED=${POSTFIX_RELAYHOST_AUTH_ENABLED}
+      - POSTFIX_RELAYHOST_TLS_ENABLED=${POSTFIX_RELAYHOST_TLS_ENABLED}
+      - POSTFIX_MYHOSTNAME=${POSTFIX_MYHOSTNAME}
+      - POSTFIX_ORIGIN=${POSTFIX_ORIGIN}
     sysctls:
       net.ipv4.ip_unprivileged_port_start: 0
