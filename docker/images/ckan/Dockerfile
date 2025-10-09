@@ -57,6 +57,8 @@ ENV CKAN_VENV $CKAN_HOME/default
 ENV CKAN_CONFIG /etc/ckan
 ENV CKAN_STORAGE_PATH=/ckanstorage
 ENV CKAN_VERSION=2.11.0
+ENV CKAN_SCHEMING_VERSION=release-3.0.0
+ENV CKAN_MSL_UTIL_VERSION=1.1.0
 
 # Create storage path
 RUN mkdir -p $CKAN_STORAGE_PATH/webassets $CKAN_STORAGE_PATH/storage && \
@@ -88,6 +90,9 @@ RUN ckan-pip3 install -U pip && \
     ckan-pip3 install wheel && \
     ckan-pip3 install -e "git+https://github.com/ckan/ckan@ckan-${CKAN_VERSION}#egg=ckan[requirements]" && \
     ckan-pip3 install uwsgi && \
+    ckan-pip3 install -e "git+https://github.com/ckan/ckanext-scheming@${CKAN_SCHEMING_VERSION}#egg=ckanext-scheming" && \
+    ckan-pip3 install -e "git+https://github.com/UtrechtUniversity/ckanext-lexces#egg=ckanext-lexces" && \
+    ckan-pip3 install -e "git+https://github.com/UtrechtUniversity/msl_ckan_util@${CKAN_MSL_UTIL_VERSION}#egg=ckanext-msl_ckan_util" && \
     ln -s $CKAN_VENV/src/ckan/ckan/config/who.ini $CKAN_CONFIG/who.ini && \
     chown -R ckan:ckan $CKAN_HOME $CKAN_VENV $CKAN_CONFIG $CKAN_STORAGE_PATH
 
