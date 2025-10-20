@@ -17,29 +17,29 @@ jobs:
       contents: read
       packages: write
     steps:
-    - name: Extract branch name
-      shell: bash
-      run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
-      id: extract_branch
+      - name: Extract branch name
+        shell: bash
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        id: extract_branch
 
-    - name: Check out Lexces catalog repository
-      uses: actions/checkout@v4
-      with:
-        path: lexces-catalog
-        repository: UtrechtUniversity/lexces-catalog
-        ref: ${{ steps.extract_branch.outputs.branch }}
+      - name: Check out Lexces catalog repository
+        uses: actions/checkout@v4
+        with:
+          path: lexces-catalog
+          repository: UtrechtUniversity/lexces-catalog
+          ref: ${{ steps.extract_branch.outputs.branch }}
 
-    - name: Authenticate to the container registry
-      uses: docker/login-action@v3
-      with:
-        registry: ghcr.io
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Authenticate to the container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Build and push Docker image
-      uses: docker/build-push-action@v6
-      with:
-        context: lexces-catalog/docker/images/nginx
-        file: lexces-catalog/docker/images/nginx/Dockerfile
-        push: true
-        tags: ghcr.io/utrechtuniversity/lexces-catalog-nginx:latest
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: lexces-catalog/docker/images/nginx
+          file: lexces-catalog/docker/images/nginx/Dockerfile
+          push: true
+          tags: ghcr.io/utrechtuniversity/lexces-catalog-nginx:latest
