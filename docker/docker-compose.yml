@@ -46,6 +46,8 @@ services:
   nginx:
     container_name: nginx
     image: ghcr.io/utrechtuniversity/lexces-catalog-nginx:latest
+    depends_on:
+      - ckan
     environment:
       - LEXCES_CATALOG_HOST=${LEXCES_CATALOG_HOST}
       - LEXCES_CATALOG_HOST_PORT=${LEXCES_CATALOG_HOST_PORT}
