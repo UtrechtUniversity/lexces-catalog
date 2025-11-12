@@ -1,8 +1,8 @@
-# This is an image for running the MTA container of the Lexces catalog
+# This is an image for running a MTA for the Lexces catalog setup
 
 # See CKAN docs on installation from Docker Compose on usage
 FROM ubuntu:noble
-MAINTAINER Yoda team
+LABEL org.opencontainers.image.authors="Yoda team"
 
 ENV MAILPIT_VERSION=v1.21.8
 
@@ -16,7 +16,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 # Setting the locale
 ENV LC_ALL=en_US.UTF-8
 RUN apt-get update
-RUN apt-get install --no-install-recommends -y locales vim
+RUN apt-get install --no-install-recommends -y locales vim iproute2
 RUN sed -i "/$LC_ALL/s/^# //g" /etc/locale.gen
 RUN dpkg-reconfigure --frontend=noninteractive locales
 RUN update-locale LANG=${LC_ALL}

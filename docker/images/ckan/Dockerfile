@@ -6,6 +6,7 @@ LABEL org.opencontainers.image.authors="Yoda team"
 
 # Set timezone
 ENV TZ=UTC
+RUN apt-get update && apt-get install -y tzdata
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # Setting the locale
@@ -34,8 +35,6 @@ RUN apt-get -q -y update \
         libgeos-dev \
         libssl-dev \
         libffi-dev \
-        libmagic1 \
-        libmagic-dev \
         postgresql-client \
         build-essential \
         git-core \
@@ -48,6 +47,8 @@ RUN apt-get -q -y update \
         uuid-runtime \
         sudo \
         vim  \
+        libmagic1 \
+        libmagic-dev \
     && apt-get -q clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -56,8 +57,9 @@ ENV CKAN_HOME /usr/lib/ckan
 ENV CKAN_VENV $CKAN_HOME/default
 ENV CKAN_CONFIG /etc/ckan
 ENV CKAN_STORAGE_PATH=/ckanstorage
-ENV CKAN_VERSION=2.11.0
+ENV CKAN_VERSION=2.11.3
 ENV CKAN_SCHEMING_VERSION=release-3.0.0
+# Our plugins
 ENV CKAN_MSL_UTIL_VERSION=1.1.0
 
 # Create storage path
@@ -82,11 +84,10 @@ ENV PATH=${CKAN_VENV}/bin:${PATH}
 ENV LEXCES_CATALOG_HOST=${LEXCES_CATALOG_HOST}
 ENV CKAN_ADMIN_PASSWORD=${CKAN_ADMIN_PASSWORD}
 
-# Install CKAN and plugins
-# Newer versions of setuptools-scm don't work with current version of CKAN because of setuptools version dependency
+# Install CKAN and plugins, configure plugins
 RUN ckan-pip3 install -U pip && \
-    ckan-pip3 install --upgrade pip && \
     ckan-pip3 install setuptools-scm==7.1.0 && \
+    ckan-pip3 install --upgrade pip && \
     ckan-pip3 install wheel && \
     ckan-pip3 install -e "git+https://github.com/ckan/ckan@ckan-${CKAN_VERSION}#egg=ckan[requirements]" && \
     ckan-pip3 install uwsgi && \
@@ -94,7 +95,7 @@ RUN ckan-pip3 install -U pip && \
     ckan-pip3 install -e "git+https://github.com/UtrechtUniversity/ckanext-lexces#egg=ckanext-lexces" && \
     ckan-pip3 install -e "git+https://github.com/UtrechtUniversity/msl_ckan_util@${CKAN_MSL_UTIL_VERSION}#egg=ckanext-msl_ckan_util" && \
     ln -s $CKAN_VENV/src/ckan/ckan/config/who.ini $CKAN_CONFIG/who.ini && \
-    chown -R ckan:ckan $CKAN_HOME $CKAN_VENV $CKAN_CONFIG $CKAN_STORAGE_PATH
+    chown -R ckan:ckan $CKAN_HOME $CKAN_VENV $CKAN_CONFIG
 
 ADD ./ckan-entrypoint.sh /ckan-entrypoint.sh
 ENTRYPOINT ["/ckan-entrypoint.sh"]
