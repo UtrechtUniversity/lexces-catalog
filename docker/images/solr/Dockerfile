@@ -3,7 +3,7 @@
 FROM solr:8.11
 LABEL org.opencontainers.image.authors="Yoda team"
 
-ENV CKAN_VERSION=2.11.2
+ENV CKAN_VERSION=2.11.3
 ENV SOLR_CONFIG_DIR="/opt/solr/server/solr/configsets"
 
 # Create a CKAN configset based on the default one
